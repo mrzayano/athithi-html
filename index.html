@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel</title>
+    <meta name="description" content="Admin panel for managing packages and rooms.">
+    <meta name="keywords" content="admin, dashboard, management, packages, rooms">
+    <meta name="author" content="Your Name">
+
+    <style>
+        body {
+            display: flex;
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        .sidebar {
+            width: 250px;
+            background-color: #2c3e50;
+            padding: 20px;
+            height: 100vh;
+            box-sizing: border-box;
+            position: fixed;
+            top: 0;
+            left: 0;
+            overflow-y: auto;
+        }
+        .sidebar img {
+            width: 80px;
+            border-radius: 50%;
+            margin-bottom: 20px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .sidebar h2 {
+            color: #ecf0f1;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .sidebar button {
+            display: block;
+            width: 100%;
+            margin-bottom: 15px;
+            padding: 15px;
+            background-color: #27ae60;
+            color: white;
+            border: none;
+            cursor: pointer;
+            text-align: left;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+        .sidebar button:hover {
+            background-color: #2ecc71;
+        }
+        .main-content {
+            flex-grow: 1;
+            margin-left: 250px;
+            padding: 40px;
+            box-sizing: border-box;
+        }
+        .main-content h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+        .main-content p {
+            font-size: 18px;
+            line-height: 1.6;
+        }
+        .section {
+            display: none;
+        }
+        .section.active {
+            display: block;
+        }
+        form {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+        input, textarea, select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        input[type="file"] {
+            padding: 5px;
+        }
+        button.submit-btn {
+            background-color: #27ae60;
+            color: white;
+            border: none;
+            padding: 15px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 10px;
+        }
+        button.submit-btn:hover {
+            background-color: #2ecc71;
+        }
+        .price-fields {
+            display: none;
+            margin-top: 20px;
+        }
+        .price-fields.active {
+            display: block;
+        }
+        .price-fields .row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .price-fields .row label {
+            flex: 1 1 45%;
+        }
+        .price-fields .row input {
+            flex: 1 1 45%;
+        }
+        .price-fields h2 {
+            margin-bottom: 20px;
+            color: #27ae60;
+        }
+        .card {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .card:hover {
+            transform: scale(1.05);
+        }
+        .card h3 {
+            margin: 0 0 10px;
+            color: #27ae60;
+        }
+        .list-item {
+            background: #fff;
+            padding: 10px;
+            border-radius: 4px;
+            box-shadow: 0 0 5px rgba(0,0,0,0.1);
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .list-item button {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .list-item button:hover {
+            background-color: #c0392b;
+        }
+        .price-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .price-buttons button {
+            flex: 1;
+        }
+    </style>
+</head>
+<body>
+    <aside class="sidebar">
+        <img src="https://via.placeholder.com/80" alt="Profile Picture">
+        <h2>Admin Panel</h2>
+        <button onclick="showSection('add-packages')">Add Package and Categories</button>
+        <button onclick="showSection('add-rooms')">Add Rooms</button>
+        <button onclick="showSection('edit-packages')">Edit Packages and Categories</button>
+        <button onclick="showSection('edit-rooms')">Edit Rooms</button>
+    </aside>
+    <main class="main-content">
+        <section id="dashboard" class="section active">
+            <h1>Admin Dashboard</h1>
+            <p>Welcome to the admin dashboard. Use the sidebar to navigate through different sections and manage your packages and rooms effectively.</p>
+        </section>
+        <section id="add-rooms" class="section">
+            <h1>Add Room</h1>
+            <form id="add-room-form">
+                <label for="room-name">Room Name</label>
+                <input type="text" id="room-name" name="room-name" required>
+
+                <label for="room-category">Category</label>
+                <select id="room-category" name="room-category" required>
+                    <option value="premium">Premium</option>
+                    <option value="budget">Budget</option>
+                    <option value="standard">Standard</option>
+                    <option value="camping">Camping</option>
+                </select>
+
+                <label for="room-image">Room Image</label>
+                <input type="file" id="room-image" name="room-image" accept="image/*" required>
+
+                <label for="room-overview-images">Room Overview Images</label>
+                <input type="file" id="room-overview-images" name="room-overview-images" accept="image/*" multiple required>
+
+                <label for="room-description">Description</label>
+                <textarea id="room-description" name="room-description" rows="4" required></textarea>
+
+                <label for="room-amenities">Amenities</label>
+                <textarea id="room-amenities" name="room-amenities" rows="4" required></textarea>
+
+                <div class="price-buttons">
+                    <button type="button" onclick="togglePriceFields('room-price-fields')">Add Premium Price Table</button>
+                </div>
+                <div id="room-price-fields" class="price-fields">
+                    <h2>Premium Price Table</h2>
+                    <div class="row"></div>
+                </div>
+
+                <button type="submit" class="submit-btn">Add Room</button>
+            </form>
+        </section>
+        <section id="add-packages" class="section">
+            <h1>Add Package and Categories</h1>
+            <form id="add-package-form">
+                <label for="package-category-heading">Package Category Heading</label>
+                <input type="text" id="package-category-heading" name="package-category-heading" required>
+
+                <label for="package-category">Package Category</label>
+                <input type="text" id="package-category" name="package-category" required>
+
+                <label for="package-name">Package Name</label>
+                <input type="text" id="package-name" name="package-name" required>
+
+                <label for="package-location">Location</label>
+                <input type="text" id="package-location" name="package-location" required>
+
+                <label for="package-image">Package Category Image</label>
+                <input type="file" id="package-image" name="package-image" accept="image/*" required>
+
+                <h2>Package 2 day / 1 night</h2>
+                <label for="package-description-2-1">Package Description</label>
+                <textarea id="package-description-2-1" name="package-description-2-1" rows="4" required></textarea>
+
+                <label for="package-inclusions-2-1">Package Inclusions</label>
+                <textarea id="package-inclusions-2-1" name="package-inclusions-2-1" rows="4" required></textarea>
+
+                <label for="package-exclusions-2-1">Package Exclusions</label>
+                <textarea id="package-exclusions-2-1" name="package-exclusions-2-1" rows="4" required></textarea>
+
+                <label for="slider-images-2-1">Slider Images</label>
+                <input type="file" id="slider-images-2-1" name="slider-images-2-1" accept="image/*" multiple required>
+
+                <label for="overview-images-2-1">Package Overview Images</label>
+                <input type="file" id="overview-images-2-1" name="overview-images-2-1" accept="image/*" multiple required>
+
+                <div class="price-buttons">
+                    <button type="button" onclick="togglePriceFields('package-price-fields-2-1-premium')">Add Premium Price Table</button>
+                    <button type="button" onclick="togglePriceFields('package-price-fields-2-1-standard')">Add Standard Price Table</button>
+                    <button type="button" onclick="togglePriceFields('package-price-fields-2-1-camping')">Add Camping Price Table</button>
+                    <button type="button" onclick="togglePriceFields('package-price-fields-2-1-budget')">Add Budget Price Table</button>
+                </div>
+                <div id="package-price-fields-2-1-premium" class="price-fields">
+                    <h2>Premium Price Table</h2>
+                    <div class="row"></div>
+                </div>
+                <div id="package-price-fields-2-1-standard" class="price-fields">
+                    <h2>Standard Price Table</h2>
+                    <div class="row"></div>
+                </div>
+                <div id="package-price-fields-2-1-camping" class="price-fields">
+                    <h2>Camping Price Table</h2>
+                    <div class="row"></div>
+                </div>
+                <div id="package-price-fields-2-1-budget" class="price-fields">
+                    <h2>Budget Price Table</h2>
+                    <div class="row"></div>
+                </div>
+
+                <button type="submit" class="submit-btn">Add Package</button>
+            </form>
+        </section>
+        <section id="edit-packages" class="section">
+            <h1>Edit Packages and Categories</h1>
+            <div id="package-list"></div>
+        </section>
+        <section id="edit-rooms" class="section">
+            <h1>Edit Rooms</h1>
+            <div id="room-list"></div>
+        </section>
+        <section id="edit-package-form-section" class="section">
+            <h1>Edit Package</h1>
+            <form id="edit-package-form">
+                <label for="edit-package-category">Package Category</label>
+                <input type="text" id="edit-package-category" name="edit-package-category" required>
+
+                <label for="edit-package-name">Package Name</label>
+                <input type="text" id="edit-package-name" name="edit-package-name" required>
+
+                <label for="edit-package-location">Location</label>
+                <input type="text" id="edit-package-location" name="edit-package-location" required>
+
+                <label for="edit-package-image">Package Category Image</label>
+                <input type="file" id="edit-package-image" name="edit-package-image" accept="image/*" required>
+
+                <div class="card" onclick="showPackageDetails('2-day-1-night')">
+                    <h3>2 Day / 1 Night</h3>
+                </div>
+                <div class="card" onclick="showPackageDetails('3-day-2-night')">
+                    <h3>3 Day / 2 Night</h3>
+                </div>
+                <div class="card" onclick="showPackageDetails('4-day-3-night')">
+                    <h3>4 Day / 3 Night</h3>
+                </div>
+
+                <button type="submit" class="submit-btn">Update Package</button>
+            </form>
+        </section>
+        <section id="edit-package-details-section" class="section">
+            <h1>Edit Package Details</h1>
+            <form id="edit-package-details-form">
+                <h2 id="package-duration-heading"></h2>
+                <label for="edit-package-description">Package Description</label>
+                <textarea id="edit-package-description" name="edit-package-description" rows="4" required></textarea>
+
+                <label for="edit-package-inclusions">Package Inclusions</label>
+                <textarea id="edit-package-inclusions" name="edit-package-inclusions" rows="4" required></textarea>
+
+                <label for="edit-package-exclusions">Package Exclusions</label>
+                <textarea id="edit-package-exclusions" name="edit-package-exclusions" rows="4" required></textarea>
+
+                <label for="edit-slider-images">Slider Images</label>
+                <input type="file" id="edit-slider-images" name="edit-slider-images" accept="image/*" multiple required>
+
+                <label for="edit-overview-images">Package Overview Images</label>
+                <input type="file" id="edit-overview-images" name="edit-overview-images" accept="image/*" multiple required>
+
+                <div class="price-buttons">
+                    <button type="button" onclick="togglePriceFields('edit-package-price-fields-premium')">Edit Premium Price Table</button>
+                    <button type="button" onclick="togglePriceFields('edit-package-price-fields-standard')">Edit Standard Price Table</button>
+                    <button type="button" onclick="togglePriceFields('edit-package-price-fields-camping')">Edit Camping Price Table</button>
+                    <button type="button" onclick="togglePriceFields('edit-package-price-fields-budget')">Edit Budget Price Table</button>
+                </div>
+                <div id="edit-package-price-fields-premium" class="price-fields">
+                    <h2>Premium Price Table</h2>
+                    <div class="row"></div>
+                </div>
+
+                <div id="edit-package-price-fields-standard" class="price-fields">
+                    <h2>Standard Price Table</h2>
+                    <div class="row"></div>
+                </div>
+
+                <div id="edit-package-price-fields-camping" class="price-fields">
+                    <h2>Camping Price Table</h2>
+                    <div class="row"></div>
+                </div>
+
+                <div id="edit-package-price-fields-budget" class="price-fields">
+                    <h2>Budget Price Table</h2>
+                    <div class="row"></div>
+                </div>
+
+                <button type="submit" class="submit-btn">Update Package Details</button>
+            </form>
+        </section>
+    </main>
+    <script>
+        let packages = [
+            {id: 1, category: 'Adventure', name: 'Mountain Expedition', location: 'Himalayas'},
+            {id: 2, category: 'Relaxation', name: 'Beach Retreat', location: 'Maldives'}
+        ];
+
+        let rooms = [
+            {id: 1, name: 'Luxury Suite', category: 'premium'},
+            {id: 2, name: 'Standard Room', category: 'standard'}
+        ];
+
+        function showSection(sectionId) {
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById(sectionId).classList.add('active');
+        }
+
+        function togglePriceFields(sectionId) {
+            const sections = document.querySelectorAll('.price-fields');
+            sections.forEach(section => {
+                if (section.id !== sectionId) {
+                    section.classList.remove('active');
+                }
+            });
+
+            const section = document.getElementById(sectionId);
+            section.classList.toggle('active');
+            if (section.classList.contains('active') && !section.querySelector('input')) {
+                const row = section.querySelector('.row');
+                for (let i = 1; i <= 27; i++) {
+                    const label = document.createElement('label');
+                    label.setAttribute('for', `${sectionId}-${i}`);
+                    label.textContent = `Price Field ${i}`;
+                    const input = document.createElement('input');
+                    input.setAttribute('type', 'text');
+                    input.setAttribute('id', `${sectionId}-${i}`);
+                    input.setAttribute('name', `${sectionId}-${i}`);
+                    const fieldContainer = document.createElement('div');
+                    fieldContainer.appendChild(label);
+                    fieldContainer.appendChild(input);
+                    row.appendChild(fieldContainer);
+                }
+            }
+        }
+
+        function showPackageDetails(duration) {
+            document.getElementById('edit-package-form-section').classList.remove('active');
+            document.getElementById('edit-package-details-section').classList.add('active');
+            document.getElementById('package-duration-heading').textContent = duration.replace(/-/g, ' ');
+        }
+
+        function loadPackages() {
+            const packageList = document.getElementById('package-list');
+            packageList.innerHTML = '';
+            packages.forEach(pkg => {
+                const div = document.createElement('div');
+                div.classList.add('list-item');
+                div.innerHTML = `
+                    <span>${pkg.name} (${pkg.category}) - ${pkg.location}</span>
+                    <button onclick="editPackage(${pkg.id})">Edit</button>
+                `;
+                packageList.appendChild(div);
+            });
+        }
+
+        function loadRooms() {
+            const roomList = document.getElementById('room-list');
+            roomList.innerHTML = '';
+            rooms.forEach(room => {
+                const div = document.createElement('div');
+                div.classList.add('list-item');
+                div.innerHTML = `
+                    <span>${room.name} (${room.category})</span>
+                    <button onclick="editRoom(${room.id})">Edit</button>
+                `;
+                roomList.appendChild(div);
+            });
+        }
+
+        function editPackage(packageId) {
+            const pkg = packages.find(p => p.id === packageId);
+            document.getElementById('edit-package-category').value = pkg.category;
+            document.getElementById('edit-package-name').value = pkg.name;
+            document.getElementById('edit-package-location').value = pkg.location;
+            showSection('edit-package-form-section');
+        }
+
+        function editRoom(roomId) {
+            const room = rooms.find(r => r.id === roomId);
+            document.getElementById('room-name').value = room.name;
+            document.getElementById('room-category').value = room.category;
+            showSection('add-rooms');
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const priceFieldsSections = [
+                'room-price-fields',
+                'package-price-fields-2-1-premium',
+                'package-price-fields-2-1-standard',
+                'package-price-fields-2-1-camping',
+                'package-price-fields-2-1-budget',
+                'package-price-fields-3-2-premium',
+                'package-price-fields-3-2-standard',
+                'package-price-fields-3-2-camping',
+                'package-price-fields-3-2-budget',
+                'package-price-fields-4-3-premium',
+                'package-price-fields-4-3-standard',
+                'package-price-fields-4-3-camping',
+                'package-price-fields-4-3-budget',
+                'edit-package-price-fields-premium',
+                'edit-package-price-fields-standard',
+                'edit-package-price-fields-camping',
+                'edit-package-price-fields-budget'
+            ];
+            priceFieldsSections.forEach(sectionId => {
+                const section = document.getElementById(sectionId);
+                if (section) {
+                    section.innerHTML = `<h2>${sectionId.replace(/-/g, ' ')}</h2><div class="row"></div>`;
+                }
+            });
+
+            loadPackages();
+            loadRooms();
+        });
+    </script>
+</body>
+</html>
